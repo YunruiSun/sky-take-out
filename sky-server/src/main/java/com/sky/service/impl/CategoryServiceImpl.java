@@ -36,8 +36,8 @@ public class CategoryServiceImpl implements CategoryService {
     private SetmealMapper setmealMapper;
 
     /**
-     * 新增分类
-     * @param categoryDTOd
+     * 新增分类测试
+     * @param categoryDTO
      */
     public void save(CategoryDTO categoryDTO) {
         Category category = new Category();
