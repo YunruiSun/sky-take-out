@@ -76,6 +76,11 @@ public class EmployeeController {
         return Result.success();
     }
 
+    /**
+     * 新增员工
+     * @param employeeDTO
+     * @return
+     */
     @PostMapping
     @ApiOperation(value = "添加员工")
     public Result save(@RequestBody EmployeeDTO employeeDTO) {
