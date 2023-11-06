@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.SetmealDishMapper">
-
+    <!--根据菜品id得到套餐id,用于判断菜品能否被批量删除-->
     <select id="getSetmealIdByDishIds" resultType="java.lang.Long">
         /*动态sql拼接为 select setmeal_id from setmeal_dish where dish_id in (1,2,3,4) */
         select *
@@ -11,4 +11,15 @@
             #{dishId}
         </foreach>
     </select>
+
+
+    <!--批量保存套餐和菜品的关联关系-->
+    <insert id="insertBatch" parameterType="list">
+        insert into setmeal_dish (setmeal_id, dish_id, name, price, copies)
+        values
+            <foreach collection="setmealDishes" item="sd" separator=",">
+                (#{sd.setmealId},#{sd.dishId},#{sd.name},#{sd.price},#{sd.copies})
+            </foreach>
+    </insert>
+
 </mapper>
