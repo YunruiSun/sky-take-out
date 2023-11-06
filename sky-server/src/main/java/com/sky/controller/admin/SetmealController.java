@@ -90,9 +90,17 @@ public class SetmealController {
      */
     @PutMapping
     @ApiOperation(value = "修改套餐数据")
-    public Result update(@RequestBody SetmealDTO setmealDTO){
-        log.info("修改套餐数据：{}",setmealDTO);
+    public Result update(@RequestBody SetmealDTO setmealDTO) {
+        log.info("修改套餐数据：{}", setmealDTO);
         setmealService.update(setmealDTO);
+        return Result.success();
+    }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("套餐起售停售")
+    public Result startOrStop(@PathVariable Integer status, Long id) {
+        log.info("设置套餐{}起售或者停售：{}，1代表起售，0代表停售", id, status);
+        setmealService.startOrStop(status, id);
         return Result.success();
     }
 }
