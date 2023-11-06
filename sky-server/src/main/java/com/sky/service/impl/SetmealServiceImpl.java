@@ -94,16 +94,71 @@ public class SetmealServiceImpl implements SetmealService {
         //判断setmeal.getStatus()
         ids.forEach(id -> {
             Setmeal setmeal = setmealMapper.getById(id);
-            if(Objects.equals(setmeal.getStatus(), StatusConstant.ENABLE)){
+            if (Objects.equals(setmeal.getStatus(), StatusConstant.ENABLE)) {
                 throw new DeletionNotAllowedException(MessageConstant.SETMEAL_ON_SALE);
             }
         });
         //如果没有抛出异常，就执行删除操作
-        ids.forEach(setmealId->{
+        ids.forEach(setmealId -> {
             //删除套餐表的套餐数据
             setmealMapper.deleteById(setmealId);
             //删除套餐菜品表里跟被删套餐的菜品数据
             setmealDishMapper.deleteBySetmealId(setmealId);
         });
+    }
+
+    /**
+     * 根据id回显套餐数据，包括菜品
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public SetmealVO getByIdWithDish(Long id) {
+        //先根据id获取套餐数据
+        Setmeal setmeal = setmealMapper.getById(id);
+        //把套餐数据copy到SetmealVO对象中
+        SetmealVO setmealVO = new SetmealVO();
+        BeanUtils.copyProperties(setmeal, setmealVO);
+
+        //根据id获取和套餐关联的菜品数据，放进List<SetmealDish>中存起来
+        List<SetmealDish> setmealDishes = setmealDishMapper.getBySetmealId(id);
+        //把菜品作为属性封装给SetmealVO
+        setmealVO.setSetmealDishes(setmealDishes);
+        return setmealVO;
+    }
+
+    /**
+     * 修改套餐
+     *
+     * @param setmealDTO
+     */
+    @Override
+    @Transactional
+    public void update(SetmealDTO setmealDTO) {
+        //传回来的DTO包含setmeal的信息，以及和套餐关联的菜品的信息，需要分开写入数据库
+        //1.把setmeal的信息提取出来到一个新的setmeal对象中，调用setmeal的update方法
+
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO, setmeal);
+        setmealMapper.update(setmeal);
+
+        //2.把List<SetmealDish>拿出来，在sql中用foreach方法写入
+
+        //这里他的逻辑是把旧的删除，新的直接就可以用之前的新增套餐
+        //获取套餐id
+        Long setmealId = setmealDTO.getId();
+
+        //删除套餐和菜品的关联关系
+        setmealDishMapper.deleteBySetmealId(setmealId);
+
+        //然后把传过来的List<SetmealDish>中的每个菜品的套餐id设置为套餐id
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+        setmealDishes.forEach(setmealDish -> {
+            setmealDish.setSetmealId(setmealId);
+        });
+
+        //重新插入套餐和菜品的关系即可
+        setmealDishMapper.insertBatch(setmealDishes);
     }
 }

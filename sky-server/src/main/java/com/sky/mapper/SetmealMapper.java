@@ -9,6 +9,7 @@ import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface SetmealMapper {
@@ -24,6 +25,7 @@ public interface SetmealMapper {
 
     /**
      * 新增套餐
+     *
      * @param setmeal
      */
     @AutoFill(OperationType.INSERT)
@@ -31,6 +33,7 @@ public interface SetmealMapper {
 
     /**
      * 分页查询
+     *
      * @param setmealPageQueryDTO
      * @return
      */
@@ -38,6 +41,7 @@ public interface SetmealMapper {
 
     /**
      * 根据套餐id查询套餐数据
+     *
      * @param id
      * @return
      */
@@ -46,8 +50,17 @@ public interface SetmealMapper {
 
     /**
      * 删除套餐
+     *
      * @param setmealId
      */
     @Delete("delete from setmeal where id=#{setmealId}")
     void deleteById(Long setmealId);
+
+    /**
+     * 更新setmeal表里的套餐信息
+     *
+     * @param setmeal
+     */
+    @AutoFill(OperationType.UPDATE)
+    void update(Setmeal setmeal);
 }
