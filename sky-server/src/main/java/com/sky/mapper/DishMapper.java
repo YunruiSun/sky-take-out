@@ -49,6 +49,12 @@ public interface DishMapper {
 
 
     //这里统一写一个查询菜品的接口
+
+    /**
+     * 动态条件查询菜品
+     * @param dish
+     * @return
+     */
     List<Dish> list(Dish dish);
 
     /**

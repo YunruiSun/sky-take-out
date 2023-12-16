@@ -116,11 +116,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         long total = page.getTotal();
         List<Employee> result = page.getResult();
 
-        return new PageResult(total,result);
+        return new PageResult(total, result);
     }
 
     /**
      * 启用禁用员工账户
+     *
      * @param status
      * @param id
      */
@@ -136,6 +137,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 员工信息回显
+     *
      * @param id
      * @return
      */
